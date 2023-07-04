@@ -31,7 +31,6 @@ engine:
   filters:
     - simplifier
     - uniquifier
-    - lua_filter@single_char_filter
   processors:
     - ascii_composer
     - recognizer
@@ -52,9 +51,6 @@ engine:
     - punct_translator
     - table_translator
     - "affix_segmentor@mkst" #精准造词
-    - "lua_translator@helper" #键入help出帮助菜单
-    - "lua_translator@time_date" #键入date出日期等功能
-    - "lua_translator@date_translator" #键入date出日期等功能
 
 # 简体转繁体
 simplifier:
