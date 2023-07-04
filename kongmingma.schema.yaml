@@ -4,28 +4,27 @@
 schema:
   schema_id: kongmingma
   name: 空明码-并击
-  version: 2022/07/01
+  version: 2022/10/18
   author:
     - 空明
     - zhanghaozhecn(schema编写)
   description: |
-    空明码，是专门并击编码方案，有音单字无重码，400万大词库，码长短(平均0.65)，8万高频词重码少(0.09%)的特点。中州韵是一款支持键盘并击的平台件，可以自定义词库编码，并击平台。
+    空明码，是专门并击编码方案，单字无重码，400万大词库，码长短(平均0.66)，8万高频词重码少(0.09%)的特点。中州韵是一款支持键盘并击的平台件，可以自定义词库编码，并击平台。
   dependencies:
 
 switches:
+  - name: simplification
+    reset: 0
+    states: [ 简, 繁 ]
+  - name: ascii_punct
+    reset: 0
+    states: [ 。，, ．， ]
+  - name: full_shape
+    reset: 0
+    states: [ 半, 全 ]
   - name: ascii_mode
     reset: 0
     states: [ 中, 英 ]
-  - name: full_shape
-    states: [ 半角, 全角 ]
-  - name: ascii_punct
-    states: [ 。，, ．， ]
-  - name: zh_trad
-    reset: 0
-    states: [ 简,繁 ]
-  - name: emoji_suggestion
-    reset: 0
-    states: ["🈚️", "🈶"]
 
 engine:
   filters:
@@ -50,7 +49,6 @@ engine:
   translators:
     - punct_translator
     - table_translator
-    - "affix_segmentor@mkst" #精准造词
 
 # 简体转繁体
 simplifier:
@@ -73,11 +71,10 @@ veng:
   enable_user_dict: false
   enable_sentence: false
   initial_quality: -1
-
+    
 speller:
   # 无后续编码自动上屏，需配合enable_completion
   auto_select: true
-
   # 进入输入区的字符
   alphabet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.?!<;:/='`7890`~@*_"
   algebra:
@@ -104,10 +101,10 @@ chord_composer:
     - xform/(79)/@/
     - xform/(70)/*/
     - xform/(90)/_/
-    - xform/(w-g-|h-o-)/U/
+    - xform/(w-g-|h-o-)/W/
     - xform/(r-g-|h-u-)/*/
     - xform/(q-g-|h-p-)/Q/
-    - xform/(e-g-|h-i-)/I/
+    - xform/(e-g-|h-i-)/E/
     - xform/(w-e-f-|j-i-o-)/I/
     - xform/(s-e-r-|u-i-l-)/U/
     - xform/(s-e-f-|j-i-l-)/Q/
@@ -117,8 +114,6 @@ chord_composer:
     - xform/(d-f-|j-k-)/j/
     - xform/(s-d-|k-l-)/k/
     - xform/(s-f-|j-l-)/l/
-    - xform/(a-b-)/l/
-    - xform/(s-b-)/l/
     - xform/(s-f-|h-l-)/F/
     - xform/(a-f-|j-F-)/;/
     - xform/(a-s-|l-F-)/:/
@@ -199,25 +194,21 @@ translator:
 
 key_binder:
   bindings:
+    - {accept: bracketleft, send: Page_Up, when: paging} # [上翻页
+    - {accept: bracketright, send: Page_Down, when: has_menu} # ]下翻页
     - { when: composing, accept: BackSpace, send: Escape }
     - { when: composing, accept: Return, send: Escape }
     - { accept: bracketleft, send: Page_Up, when: paging }
     - { accept: bracketright, send: Page_Down, when: has_menu }
-    - { when: composing, accept: Shift_L, send: 2 }
-    - { when: composing, accept: Shift_R, send: 3 }    
-    - {accept: "Control+Shift+4", toggle: zh_trad, when: always} #繁简开关
-    - {accept: "Control+Shift+dollar", toggle: zh_trad, when: always} #繁简开关
-    - {accept: "Control+Shift+F", toggle: zh_trad, when: always} #繁简开关
-    - {accept: "Control+Shift+G", toggle: emoji_suggestion, when: always} #emoji
-    - {accept: "Control+Shift+K", toggle: single_char, when: always} #单字模式
+    - { when: composing, accept: Shift+Shift_L, send: 2 }
+    - { when: composing, accept: Shift+Shift_R, send: 3 } 
+    - {accept: "Control+j", toggle: simplification, when: always} #切换简繁
+
 
 # 用大写锁定切换中英文
 ascii_composer:
-  good_old_caps_lock: true
+  good_old_caps_lock: false
   switch_key:
-    Control_L: clear # noop 无 |clear 字符被清除，转英文输入
-    Control_R: clear # noop 无 |commit_text 输入一段编码字符后汉字上屏，转英文输入
     Shift_L: noop
     Shift_R: noop
     Caps_Lock: clear
-    Eisu_toggle: clear
