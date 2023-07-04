@@ -1,0 +1,17 @@
+# Rime dictionary: kongmingma
+# encoding: utf-8
+#
+# 空明码
+
+#
+
+---
+name: kongmingma
+version: 2022/01/20
+sort: by_weight
+import_tables:
+  - kongmingma1
+  - kongmingma2
+  - kongmingma3
+  - kongmingma4
+...
